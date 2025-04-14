@@ -57,10 +57,20 @@ const Index = () => {
     }
   };
 
+  const handleNewChat = () => {
+    if (messages.length > 0) {
+      setMessages([]);
+      toast({
+        title: "New Chat",
+        description: "Started a new conversation",
+      });
+    }
+  };
+
   return (
     <div className="flex h-screen bg-skysettle-main">
       <main className="flex-1 w-full">
-        <SkySettleHeader />
+        <SkySettleHeader onNewChat={handleNewChat} />
         
         <div className={`flex h-full flex-col ${messages.length === 0 ? 'items-center justify-center' : 'justify-between'} pt-[60px] pb-4`}>
           {messages.length === 0 ? (
