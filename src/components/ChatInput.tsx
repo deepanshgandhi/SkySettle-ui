@@ -33,7 +33,7 @@ const ChatInput = ({ onSend, isLoading = false }: ChatInputProps) => {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about flight compensation..."
-          className="w-full resize-none rounded-md bg-white border border-skysettle-border px-4 py-4 pr-12 focus:outline-none focus:ring-1 focus:ring-skysettle-primary"
+          className="w-full resize-none rounded-xl bg-white border border-skysettle-border px-4 py-4 pr-12 focus:outline-none focus:ring-1 focus:ring-skysettle-primary"
           style={{ maxHeight: "200px" }}
           disabled={isLoading}
         />
