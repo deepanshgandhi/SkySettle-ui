@@ -26,73 +26,48 @@ const Index = () => {
     setResult('');
 
     try {
-      // Here we would normally make a real API call to a FastAPI backend
-      // For demonstration, we'll simulate streaming with a fake response
+      // Format date as YYYY-MM-DD
+      const dateStr = flightDate.toISOString().split('T')[0];
       
-      // Simulate API endpoint call
-      const response = await fetch('https://your-fastapi-endpoint.com/check-flight', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          flightNumber,
-          flightDate: flightDate.toISOString().split('T')[0],
-        }),
-      });
+      // Call the compensation API with streaming response
+      const response = await fetch(`http://localhost:8000/compensation?flight_number=${encodeURIComponent(flightNumber)}&date=${dateStr}`);
 
-      // Check if the response is ok
       if (!response.ok) {
-        throw new Error('Failed to fetch data from API');
+        throw new Error('Failed to fetch compensation data');
       }
 
-      // Simulate streaming response
+      // Get the response reader for streaming
       const reader = response.body?.getReader();
-      
-      // Since we can't actually connect to a real API, let's simulate a streaming response
-      // In a real implementation, you would use the reader to read chunks
-      await simulateStreamingResponse((chunk) => {
+      if (!reader) {
+        throw new Error('Failed to get response reader');
+      }
+
+      // Read the stream
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) {
+          break;
+        }
+        
+        // Convert the received chunk to text and append to result
+        const chunk = new TextDecoder().decode(value);
         setResult(prev => prev + chunk);
-      });
+      }
 
       toast({
         title: "Success",
         description: "Flight check completed",
       });
     } catch (error: any) {
-      // In a real app, replace this with actual API error handling
       console.error('Error:', error);
-      
-      // Simulate a streaming response for demonstration
-      await simulateStreamingResponse((chunk) => {
-        setResult(prev => prev + chunk);
-      });
-      
       toast({
-        title: "Note",
-        description: "Using simulated data (no actual API connected)",
+        title: "Error",
+        description: error.message || "Failed to check flight compensation",
+        variant: "destructive"
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // This function simulates a streaming response
-  const simulateStreamingResponse = async (callback: (chunk: string) => void) => {
-    const simulatedResponse = [
-      "Checking flight details...\n\n",
-      "Flight: {flightNumber}\n",
-      "Date: {date}\n\n",
-      "Processing flight information...\n",
-      "Checking for delays or cancellations...\n\n",
-      "Result: This flight was delayed by 3 hours and 45 minutes.\n\n",
-      "Compensation eligibility: Based on EU Regulation 261/2004, you may be entitled to compensation of up to €600.\n\n",
-      "Next steps: We recommend filing a claim with the airline. Would you like assistance with preparing your claim?"
-    ];
-
-    for (const chunk of simulatedResponse) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      callback(chunk);
     }
   };
 
