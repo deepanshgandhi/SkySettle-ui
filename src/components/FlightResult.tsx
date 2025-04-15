@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { Plane, History, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,6 +28,18 @@ const FlightResult = ({ content }: FlightResultProps) => {
       resultRef.current.scrollTop = resultRef.current.scrollHeight;
     }
   }, [content]);
+
+  const parseStreamedContent = (content: string) => {
+    const reasoningMatch = content.match(/<think>(.*?)<\/think>/s);
+    const finalAnswerMatch = content.replace(/<think>.*?<\/think>/s, '').trim();
+
+    return {
+      reasoning: reasoningMatch ? reasoningMatch[1].trim() : '',
+      finalAnswer: finalAnswerMatch
+    };
+  };
+
+  const { reasoning, finalAnswer } = parseStreamedContent(content);
 
   const fetchFlightHistory = async () => {
     setIsLoading(true);
@@ -150,10 +161,28 @@ const FlightResult = ({ content }: FlightResultProps) => {
       
       <div 
         ref={resultRef}
-        className="bg-gray-50 rounded-lg p-4 max-h-[400px] overflow-y-auto"
+        className="bg-gray-50 rounded-lg p-4 max-h-[400px] overflow-y-auto space-y-4"
       >
         {content ? (
-          <div className="whitespace-pre-wrap">{content}</div>
+          <>
+            {reasoning && (
+              <div>
+                <h3 className="text-sm font-semibold text-skysettle-dark mb-2">Reasoning</h3>
+                <p className="text-sm text-skysettle-dark/80 bg-white p-3 rounded-md border border-skysettle-border">
+                  {reasoning}
+                </p>
+              </div>
+            )}
+            
+            {finalAnswer && (
+              <div>
+                <h3 className="text-sm font-semibold text-skysettle-dark mb-2">Final Answer</h3>
+                <p className="text-sm text-skysettle-dark/80 bg-white p-3 rounded-md border border-skysettle-border">
+                  {finalAnswer}
+                </p>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-skysettle-dark/50 text-center py-8">
             Submit a flight number and date to check compensation eligibility
