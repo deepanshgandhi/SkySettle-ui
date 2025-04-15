@@ -30,7 +30,12 @@ const Index = () => {
       const dateStr = flightDate.toISOString().split('T')[0];
       
       // Call the compensation API with streaming response
-      const response = await fetch(`http://localhost:8000/compensation?flight_number=${encodeURIComponent(flightNumber)}&date=${dateStr}`);
+      //const response = await fetch(`http://localhost:8000/compensation?flight_number=${encodeURIComponent(flightNumber)}&date=${dateStr}`);
+      const response = await fetch(`http://localhost:8000/compensation?flight_number=${encodeURIComponent(flightNumber)}&date=${dateStr}`, {
+        headers: {
+          'Accept': 'text/plain',
+        },
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch compensation data');
