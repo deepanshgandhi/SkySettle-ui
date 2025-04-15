@@ -1,22 +1,8 @@
 
 import { useEffect, useRef, useState } from "react";
-import { BarChart, Plane, History } from "lucide-react";
+import { Plane, History, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
-  ChartContainer, 
-  ChartTooltip, 
-  ChartTooltipContent 
-} from "@/components/ui/chart";
-import { 
-  BarChart as RechartsBarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  ResponsiveContainer,
-  Tooltip,
-  Cell
-} from "recharts";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 interface FlightResultProps {
@@ -87,63 +73,67 @@ const FlightResult = ({ content }: FlightResultProps) => {
     }
   };
 
-  const renderFlightHistoryChart = () => {
+  const renderFlightHistoryCards = () => {
     if (!historyData) return null;
     
-    const chartData = [
-      { name: 'On Time', value: historyData.onTime, color: '#10B981' },
-      { name: 'Delayed', value: historyData.delayed, color: '#F59E0B' },
-      { name: 'Cancelled', value: historyData.cancelled, color: '#ea384c' }
-    ];
-
     return (
       <div className="mt-6 space-y-4">
-        <div className="flex flex-col md:flex-row items-start justify-between gap-4">
-          <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-auto">
-            <h3 className="text-lg font-medium text-skysettle-dark">Total Flights</h3>
-            <div className="text-3xl font-bold text-skysettle-primary mt-2">{historyData.totalFlights}</div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="border-skysettle-border">
+            <CardContent className="p-4 flex flex-col items-center">
+              <h3 className="text-lg font-medium text-skysettle-dark">Total Flights</h3>
+              <div className="text-3xl font-bold text-skysettle-primary mt-2">{historyData.totalFlights}</div>
+            </CardContent>
+          </Card>
           
-          <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-auto">
-            <h3 className="text-lg font-medium text-skysettle-dark">Average Delay</h3>
-            <div className="text-3xl font-bold text-skysettle-warning mt-2">{historyData.averageDelayMinutes} min</div>
-          </div>
+          <Card className="border-skysettle-border">
+            <CardContent className="p-4 flex flex-col items-center">
+              <h3 className="text-lg font-medium text-skysettle-dark">Average Delay</h3>
+              <div className="text-3xl font-bold text-skysettle-warning mt-2">{historyData.averageDelayMinutes} min</div>
+            </CardContent>
+          </Card>
         </div>
         
-        <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-          <h3 className="text-lg font-medium text-skysettle-dark mb-4">Last 7 Days Flight Status</h3>
-          <div className="h-[300px]">
-            <ChartContainer
-              config={{
-                onTime: { label: "On Time", color: "#10B981" },
-                delayed: { label: "Delayed", color: "#F59E0B" },
-                cancelled: { label: "Cancelled", color: "#ea384c" }
-              }}
-            >
-              <RechartsBarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip 
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-white p-2 border rounded shadow-sm">
-                          <p className="text-sm">{`${payload[0].name}: ${payload[0].value}`}</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Bar dataKey="value" barSize={60}>
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </RechartsBarChart>
-            </ChartContainer>
-          </div>
+        <h3 className="text-lg font-medium text-skysettle-dark mt-6 mb-2">Last 7 Days Flight Status</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="border-skysettle-border bg-white">
+            <CardContent className="p-4 flex flex-col items-center">
+              <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center mb-2">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+              </div>
+              <h3 className="text-lg font-medium text-skysettle-dark">On Time</h3>
+              <div className="text-2xl font-bold text-green-600 mt-2">{historyData.onTime}</div>
+              <div className="text-sm text-gray-500 mt-1">
+                {Math.round((historyData.onTime / historyData.totalFlights) * 100)}% of flights
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-skysettle-border bg-white">
+            <CardContent className="p-4 flex flex-col items-center">
+              <div className="h-10 w-10 rounded-full bg-amber-50 flex items-center justify-center mb-2">
+                <Clock className="h-5 w-5 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-medium text-skysettle-dark">Delayed</h3>
+              <div className="text-2xl font-bold text-amber-600 mt-2">{historyData.delayed}</div>
+              <div className="text-sm text-gray-500 mt-1">
+                {Math.round((historyData.delayed / historyData.totalFlights) * 100)}% of flights
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-skysettle-border bg-white">
+            <CardContent className="p-4 flex flex-col items-center">
+              <div className="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center mb-2">
+                <XCircle className="h-5 w-5 text-red-600" />
+              </div>
+              <h3 className="text-lg font-medium text-skysettle-dark">Cancelled</h3>
+              <div className="text-2xl font-bold text-red-600 mt-2">{historyData.cancelled}</div>
+              <div className="text-sm text-gray-500 mt-1">
+                {Math.round((historyData.cancelled / historyData.totalFlights) * 100)}% of flights
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -191,7 +181,7 @@ const FlightResult = ({ content }: FlightResultProps) => {
         </div>
       )}
       
-      {showHistory && renderFlightHistoryChart()}
+      {showHistory && renderFlightHistoryCards()}
     </div>
   );
 };
