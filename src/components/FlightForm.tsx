@@ -42,6 +42,8 @@ interface FlightFormProps {
 
 const FlightForm = ({ onSubmit, isLoading = false }: FlightFormProps) => {
   const { toast } = useToast();
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  
   const form = useForm<FlightFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,7 +96,7 @@ const FlightForm = ({ onSubmit, isLoading = false }: FlightFormProps) => {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Flight Date</FormLabel>
-              <Popover>
+              <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -114,13 +116,20 @@ const FlightForm = ({ onSubmit, isLoading = false }: FlightFormProps) => {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-50" align="start">
+                <PopoverContent 
+                  className="w-auto p-0 z-50 bg-white shadow-lg rounded-md border" 
+                  align="start"
+                >
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      // Close the popover after selection
+                      if (date) setPopoverOpen(false);
+                    }}
                     initialFocus
-                    className="pointer-events-auto"
+                    className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
