@@ -1,71 +1,118 @@
-# Welcome to your GPT Engineer project
+# SkySettle - Flight Delay Compensation Assistant
 
-## Project info
+SkySettle is a modern web application that helps air travelers check their eligibility for compensation after experiencing flight delays or cancellations. The application analyzes flight information against relevant air passenger rights regulations to provide clear guidance on compensation claims.
 
-**URL**: https://run.gptengineer.app/projects/9d4bcff1-da7e-4e73-bb35-7a988b4bdb7f/improve
+## Features
 
-## How can I edit this code?
+- **Flight Compensation Eligibility Check**: Enter your flight number and date to get an instant assessment of your compensation eligibility.
+- **Flight History Analysis**: View the performance history of your flight over the past 7 days, including on-time, delayed, and cancellation statistics.
+- **Delay/Cancellation Analysis**: Get detailed information about the reasons behind flight delays or cancellations to support your compensation claim.
+- **Real-time Data Processing**: See results as they're generated through a streaming response system.
+- **Clean, Modern UI**: Intuitive interface built with React and Tailwind CSS for a seamless user experience.
 
-There are several ways of editing your application.
+## Technology Stack
 
-**Use GPT Engineer**
+- **Frontend**: React with TypeScript
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Build Tool**: Vite
+- **Backend Communication**: Fetch API with streaming response handling
 
-Simply visit the GPT Engineer project at [GPT Engineer](https://gptengineer.app/projects/9d4bcff1-da7e-4e73-bb35-7a988b4bdb7f/improve) and start prompting.
+## Getting Started
 
-Changes made via gptengineer.app will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v14 or later)
+- npm or yarn package manager
+- A backend API service running on http://localhost:8000 : [Github Repo Link](https://github.com/deepanshgandhi/SkySettle)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the GPT Engineer UI.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone this repository:
+   ```sh
+   git clone https://github.com/yourusername/skysettle.git
+   cd skysettle
+   ```
 
-Follow these steps:
+2. Install dependencies:
+   ```sh
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Start the development server:
+   ```sh
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. The application will be available at http://localhost:8080
+
+### Backend Requirements
+
+The application expects the following API endpoints to be available on your backend:
+
+- `http://localhost:8000/compensation` - For flight compensation eligibility checks
+- `http://localhost:8000/flight-stats` - For flight history statistics
+- `http://localhost:8000/cancellation-reason` - For delay/cancellation reason analysis
+
+Each endpoint should support streaming responses for real-time data processing.
+
+## How to Use SkySettle
+
+1. **Start a Flight Check**:
+   - Enter a valid flight number (e.g., BA1234) in the Flight Number field
+   - Select the date of your flight using the date picker
+   - Click the "Check Flight" button
+
+2. **Review Compensation Eligibility**:
+   - The application will display your compensation eligibility status
+   - You'll receive information about applicable regulations and potential compensation amounts
+
+3. **View Flight History**:
+   - After receiving your compensation check results, click "Show past 7 days flight history"
+   - Review statistics about on-time performance, delays, and cancellations for your flight
+
+4. **Analyze Delay/Cancellation Reasons**:
+   - Click "Check delay/cancel reason" to get detailed information about the factors behind your flight disruption
+   - This information can be valuable when filing a compensation claim
+
+5. **Start a New Check**:
+   - Click "Check another flight" at any time to begin a new search
+
+## Development and Contribution
+
+### Project Structure
+
+- `src/components` - React components
+- `src/hooks` - Custom React hooks
+- `src/pages` - Page-level components
+- `src/lib` - Utility functions
+
+### Running Tests
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm test
+# or
+yarn test
 ```
 
-**Edit a file directly in GitHub**
+### Building for Production
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run build
+# or
+yarn build
+```
 
-**Use GitHub Codespaces**
+The built files will be in the `dist` directory.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## License
 
-## What technologies are used for this project?
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-This project is built with .
+## Acknowledgments
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-All GPT Engineer projects can be deployed directly via the GPT Engineer app.
-
-Simply visit your project at [GPT Engineer](https://gptengineer.app/projects/9d4bcff1-da7e-4e73-bb35-7a988b4bdb7f/improve) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.gptengineer.app/tips-tricks/custom-domain/)
+- Built with [shadcn/ui](https://ui.shadcn.com/) components
+- Icon set from [Lucide Icons](https://lucide.dev/)

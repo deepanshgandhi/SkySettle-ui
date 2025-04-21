@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2, Plane } from "lucide-react";
+import { CalendarIcon, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -23,7 +22,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import LoadingEllipsis from "./LoadingEllipsis";
 
+/**
+ * Zod schema for form validation
+ * 
+ * Validates flight number and date inputs before submission
+ */
 const formSchema = z.object({
   flightNumber: z.string().min(2, {
     message: "Flight number must be at least 2 characters.",
@@ -33,17 +38,34 @@ const formSchema = z.object({
   }),
 });
 
+/** Type representing validated form data */
 type FlightFormValues = z.infer<typeof formSchema>;
 
+/**
+ * Props for the FlightForm component
+ * 
+ * @property {Function} onSubmit - Callback function executed when form is submitted with valid data
+ * @property {boolean} isLoading - Optional flag indicating if submission is in progress
+ */
 interface FlightFormProps {
   onSubmit: (flightNumber: string, flightDate: Date) => Promise<void>;
   isLoading?: boolean;
 }
 
+/**
+ * Flight information entry form component
+ * 
+ * Provides validated inputs for flight number and date selection
+ * with loading states and error handling.
+ * 
+ * @param {FlightFormProps} props - Component props
+ * @returns React component
+ */
 const FlightForm = ({ onSubmit, isLoading = false }: FlightFormProps) => {
   const { toast } = useToast();
   const [popoverOpen, setPopoverOpen] = useState(false);
   
+  // Initialize form with zod resolver for validation
   const form = useForm<FlightFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,15 +73,26 @@ const FlightForm = ({ onSubmit, isLoading = false }: FlightFormProps) => {
     },
   });
 
+  /**
+   * Handles form submission after validation
+   * 
+   * Saves flight data to session storage and calls the parent's onSubmit callback
+   * 
+   * @param {FlightFormValues} values - Validated form values
+   */
   const handleSubmit = async (values: FlightFormValues) => {
     if (isLoading) return;
     
     try {
+      // Store flight details in session storage for later use
+      sessionStorage.setItem("flightNumber", values.flightNumber);
+      sessionStorage.setItem("flightDate", values.flightDate.toString());
       await onSubmit(values.flightNumber, values.flightDate);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       toast({
         title: "Error",
-        description: error.message || "Something went wrong",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -145,8 +178,7 @@ const FlightForm = ({ onSubmit, isLoading = false }: FlightFormProps) => {
         >
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing
+              Processing<LoadingEllipsis className="ml-1" color="text-white" />
             </>
           ) : (
             <>

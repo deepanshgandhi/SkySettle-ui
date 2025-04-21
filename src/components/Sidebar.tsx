@@ -1,17 +1,34 @@
-
 import { Plane, MapPin, Calendar, Clock, FileText, HelpCircle, Key } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
+/**
+ * Props for the Sidebar component
+ * 
+ * @property {boolean} isOpen - Whether the sidebar is currently expanded
+ * @property {Function} onToggle - Function to toggle the sidebar open/closed state
+ * @property {Function} onApiKeyChange - Callback when API key is changed by user
+ */
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   onApiKeyChange: (apiKey: string) => void;
 }
 
+/**
+ * Sidebar navigation component with collapsible interface
+ * 
+ * Provides navigation options, API key entry, and recent searches list.
+ * Can be toggled between expanded and collapsed states.
+ * 
+ * @param {SidebarProps} props - Component props
+ * @returns React component
+ */
 const Sidebar = ({ isOpen, onToggle, onApiKeyChange }: SidebarProps) => {
   const [apiKey, setApiKey] = useState("");
+  
+  // Navigation sections data
   const recentSearches = [
     { title: "Recent Searches", items: ["LH1234 Frankfurt to London", "BA789 Delayed 3 hours"] },
     { 
@@ -35,6 +52,11 @@ const Sidebar = ({ isOpen, onToggle, onApiKeyChange }: SidebarProps) => {
     }
   ];
 
+  /**
+   * Handles API key changes and propagates to parent component
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
+   */
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newApiKey = e.target.value;
     setApiKey(newApiKey);
@@ -47,14 +69,20 @@ const Sidebar = ({ isOpen, onToggle, onApiKeyChange }: SidebarProps) => {
       isOpen ? "w-64" : "w-0"
     )}>
       <nav className="flex h-full w-full flex-col px-3" aria-label="Flight history">
+        {/* Header with toggle button and app name */}
         <div className="flex justify-between flex h-[60px] items-center">
-          <button onClick={onToggle} className="h-10 rounded-lg px-2 text-skysettle-dark hover:bg-skysettle-hover">
+          <button 
+            onClick={onToggle} 
+            className="h-10 rounded-lg px-2 text-skysettle-dark hover:bg-skysettle-hover"
+            aria-label="Toggle sidebar"
+          >
             <Plane className="h-5 w-5 rotate-45" />
           </button>
           <span className="font-semibold text-skysettle-primary">SkySettle</span>
         </div>
 
         <div className="flex-col flex-1 transition-opacity duration-500 relative -mr-2 pr-2 overflow-y-auto">
+          {/* API Key input section - only visible when sidebar is open */}
           {isOpen && (
             <div className="p-2 mb-4">
               <div className="flex items-center gap-2 mb-2">
@@ -67,10 +95,12 @@ const Sidebar = ({ isOpen, onToggle, onApiKeyChange }: SidebarProps) => {
                 value={apiKey}
                 onChange={handleApiKeyChange}
                 className="bg-white border-skysettle-border"
+                aria-label="API Key input"
               />
             </div>
           )}
 
+          {/* Main navigation menu */}
           <div className="pt-0">
             <div className="flex flex-col gap-2 px-2 py-2">
               <div className="group flex h-10 items-center gap-2.5 rounded-lg px-2 hover:bg-skysettle-hover cursor-pointer bg-skysettle-primary/10">
@@ -87,6 +117,7 @@ const Sidebar = ({ isOpen, onToggle, onApiKeyChange }: SidebarProps) => {
               </div>
             </div>
 
+            {/* Recent searches and saved items sections */}
             <div className="mt-4 flex flex-col gap-4">
               {recentSearches.map((section) => (
                 <div key={section.title}>
@@ -102,9 +133,13 @@ const Sidebar = ({ isOpen, onToggle, onApiKeyChange }: SidebarProps) => {
           </div>
         </div>
 
+        {/* Help center footer - only visible when sidebar is open */}
         {isOpen && (
           <div className="flex flex-col py-2 border-t border-skysettle-border">
-            <button className="group flex gap-2 p-2.5 text-sm items-start hover:bg-skysettle-hover rounded-lg px-2 text-left w-full">
+            <button 
+              className="group flex gap-2 p-2.5 text-sm items-start hover:bg-skysettle-hover rounded-lg px-2 text-left w-full"
+              aria-label="Help Center"
+            >
               <span className="flex w-full flex-row flex-wrap-reverse justify-between">
                 <div className="flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full border border-skysettle-border bg-skysettle-primary text-white">
